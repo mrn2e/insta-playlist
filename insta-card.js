@@ -1,0 +1,98 @@
+/**
+ * Copyright 2026 Mayita
+ * @license Apache-2.0, see LICENSE for full text.
+ */
+import { LitElement, html, css } from "lit";
+import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
+import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
+
+/**
+ * `insta-card
+ * 
+ * @demo index.html
+ * @element insta-card
+ */
+export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
+
+  static get tag() {
+    return "insta-card";
+  }
+
+  constructor() {
+    super();
+    this.title = "";
+    this.desc = "";
+    this.topHeading = "";
+    this.t = this.t || {};
+    this.t = {
+      ...this.t,
+      title: "Title",
+    };
+    ;
+  }
+
+  // Lit reactive properties
+  static get properties() {
+    return {
+      ...super.properties,
+      title: { type: String },
+      desc: { type: String },
+      topHeading: { type: String },
+      active: { type: Boolean, reflect: true },
+    };
+  }
+
+  // Lit scoped styles
+  static get styles() {
+    return [super.styles,
+    css`
+      :host {
+        display: none;
+      }
+      :host([active]) {
+        display: block;
+        border-width: var(--ddd-border-size-lg);
+        min-height: 200px;
+        padding-right: 100px;
+      }
+      h3 {
+        color: var(--ddd-theme-default-beaverBlue);
+        font-size: var(--ddd-font-size-xxl);
+        padding: 0px;
+        margin: 0px;
+      }
+      .top-heading {
+        color: var(--ddd-theme-default-link);
+        font-size: 18px;
+        font-weight: var(--ddd-font-weight-bold);
+        text-transform: uppercase;
+        margin: 0;
+        margin-top: 30px;
+        padding: 3px;
+      }
+      .line {
+        border-top: 1px solid var(--ddd-theme-primary); 
+        font-size: 10px;
+        margin-top: 30px;
+        color: var(--ddd-theme-default-pughBlue);
+      }
+      
+    `];
+  }
+
+  // Lit render the HTML
+  //tasks: know index, show/hide based on idex (class? for active)
+  render() {
+    return html`
+<div class="wrapper">
+  <p class="top-heading">${this.topHeading}</p>
+  <h3>${this.title}</h3>
+  <div class="line">────────</div>
+  <h3 class="desc">${this.desc}</h3>
+  <slot></slot>
+</div>`;
+  }
+
+}
+
+globalThis.customElements.define(InstaCard.tag, InstaCard);

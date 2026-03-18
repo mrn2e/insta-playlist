@@ -89,11 +89,11 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
 <div class="wrapper">
 
 <div class="arrow">
-  <slide-arrow
+  <playlist-arrow
   direction='prev'
   @prev-clicked="${this.prev}">
 
-  </slide-arrow>
+  </playlist-arrow>
 
 
   <div class="slides">
@@ -101,18 +101,18 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
   </div>
 
   
-  <slide-arrow
+  <playlist-arrow
   direction='next'
   @next-clicked="${this.next}">
-  </slide-arrow>
+  </playlist-arrow>
   </div>
 
   <div class="indicator">
-  <slide-indicator
+  <card-indicator
   @play-list-index-changed="${this.handleEvent}"
   .total="${this.slides ? this.slides.length : 0}"
   .currentIndex="${this.currentIndex}">
-  </slide-indicator>
+  </card-indicator>
 </div>
 </div>
 `;
@@ -140,11 +140,11 @@ firstUpdated() {
   const elements = slot.assignedElements({ flatten: true });
 
   this.slides = elements.filter(
-    (el) => el.tagName === "SLIDE-ITEM"
+    (el) => el.tagName === "INSTA-CARD"
   );
 
   this.arrows = elements.filter(
-    (el) => el.tagName === "SLIDE-ARROW"
+    (el) => el.tagName === "PLAYLIST-ARROW"
   );
 
   this.arrows.forEach((arrow) => {
@@ -181,4 +181,4 @@ _updateSlides() {
 
 }
 
-globalThis.customElements.define(PlayListItem.tag, PlayListItem);
+globalThis.customElements.define(InstaPlaylist.tag, InstaPlaylist);
