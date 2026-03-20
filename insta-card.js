@@ -21,7 +21,6 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
   constructor() {
     super();
     this.title = "";
-    this.desc = "";
     this.topHeading = "";
     this.img = "";
     this.t = this.t || {};
@@ -36,7 +35,6 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
   static get properties() {
     return {
       ...super.properties,
-      title: { type: String },
       desc: { type: String },
       topHeading: { type: String },
       img: { type: String },
@@ -56,6 +54,9 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         border-width: var(--ddd-border-size-lg);
         min-height: 200px;
         padding-right: 100px;
+        background-color: WHITE;
+        border-radius: var(--ddd-radius-md);
+        padding: var(--ddd-spacing-4);
       }
       h3 {
         color: var(--ddd-theme-default-beaverBlue);
@@ -79,12 +80,20 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         color: var(--ddd-theme-default-pughBlue);
       }
       .image {
-        width: 100%;
-        min-height: 200px;
+        width: 320px;
+        height: 240px;
+        max-width: 100%;
+        min-height: 240px;
+        object-fit: cover;
         background-size: cover;
         background-position: center;
-        margin: 1rem 0;
         border-radius: 8px;
+        display: block;
+      }
+      .icons {
+        width: 100px; 
+        margin: 0 px;
+        padding-bottom: 0px;
       }
     `];
   }
@@ -95,12 +104,10 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
     return html`
 <div class="wrapper">
   <p class="top-heading">${this.topHeading}</p>
-  <h3>${this.title}</h3>
-  <div class="line">────────</div>
   ${this.img
           ? html`<div class="image" style="background-image: url(${this.img});"></div>`
       : html``}
-  <h3 class="desc">${this.desc}</h3>
+  <img class="icons" src="https://static.vecteezy.com/system/resources/thumbnails/002/855/165/small/minimalist-social-media-icons-like-comment-share-and-save-icons-social-media-flat-icon-vector.jpg">
   <slot></slot>
 </div>`;
   }

@@ -54,7 +54,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
       :host {
         display: block;
         color: var(--ddd-theme-primary);
-        background-color: var(--ddd-theme-default-alertNonEmergency);
+        background-color: gray;
         font-family: var(--ddd-font-navigation);
         box-shadow: var(--ddd-shadow-elevation-2);
         border-radius: var(--ddd-radius-lg);
@@ -68,7 +68,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
         height: 100%;
         display: flex;
         flex-direction: column;
-        background-color: var(--ddd-theme-default-alertNonEmergency);
+        background-color: gray;
       }
       .arrow {
         display: flex;
@@ -171,7 +171,7 @@ loadStaticData() {
     if (this.slides[index]) {
       this.slides[index].title = i.title;
       this.slides[index].img = i.source;
-      this.slides[index].topHeading = "insta-playlist line 182 test";
+      ;
     }
   });
 }
@@ -182,8 +182,7 @@ async getFoxes() {
     if (resp.ok) {
       const data = await resp.json();
       this.slides[i].img = data.image;
-      this.slides[i].title = `Fox ${i + 1}`;
-      this.slides[i].topHeading = "Random Fox";
+      ;
     }
   }
 }
