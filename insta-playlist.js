@@ -22,6 +22,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
     super();
     this.title = "";
     this.currentIndex = 0;
+    this.dataUrl = "https://randomfox.ca/floof/";
     this.t = this.t || {};
     this.t = {
       ...this.t,
@@ -40,7 +41,9 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
-      currentIndex: { type: Number },
+      currentIndex: { type: Number, reflect: true },
+      items: { type: Array },
+      dataUrl: { type: String },
     };
   }
 
@@ -135,7 +138,7 @@ prev() {
   }
 }
 
-firstUpdated() {
+async firstUpdated() {
   const slot = this.shadowRoot.querySelector("slot");
   const elements = slot.assignedElements({ flatten: true });
 
@@ -143,19 +146,46 @@ firstUpdated() {
     (el) => el.tagName === "INSTA-CARD"
   );
 
-  this.arrows = elements.filter(
-    (el) => el.tagName === "PLAYLIST-ARROW"
-  );
-
-  this.arrows.forEach((arrow) => {
-    arrow.addEventListener("click", () => {
-      this._handleArrow(arrow.direction);
-    });
-  });
-
+  this.currentIndex = 0;
+  this.loadStaticData();
+  await this.getFoxes(); 
   this._updateSlides();
   this.requestUpdate();
-  
+}
+
+response = {
+  "data": [
+    {
+      "source": "https://github.com/btopro.png",
+      "title": "Inventor"
+    },
+    {
+      "source": "https://github.com/haxtheweb.png",
+      "title": "Invention"
+    }
+  ]
+};
+
+loadStaticData() {
+  this.response.data.forEach((i, index) => {
+    if (this.slides[index]) {
+      this.slides[index].title = i.title;
+      this.slides[index].img = i.source;
+      this.slides[index].topHeading = "insta-playlist line 182 test";
+    }
+  });
+}
+
+async getFoxes() {
+  for (let i = 0; i < this.slides.length; i++) {
+    const resp = await fetch(this.dataUrl);
+    if (resp.ok) {
+      const data = await resp.json();
+      this.slides[i].img = data.image;
+      this.slides[i].title = `Fox ${i + 1}`;
+      this.slides[i].topHeading = "Random Fox";
+    }
+  }
 }
 
 _handleArrow(direction) {
@@ -178,6 +208,8 @@ _updateSlides() {
     slide.toggleAttribute("active", index === this.currentIndex);
   });
 }
+
+
 
 }
 

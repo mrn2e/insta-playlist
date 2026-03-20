@@ -23,6 +23,7 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
     this.title = "";
     this.desc = "";
     this.topHeading = "";
+    this.img = "";
     this.t = this.t || {};
     this.t = {
       ...this.t,
@@ -38,6 +39,7 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
       title: { type: String },
       desc: { type: String },
       topHeading: { type: String },
+      img: { type: String },
       active: { type: Boolean, reflect: true },
     };
   }
@@ -76,7 +78,14 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         margin-top: 30px;
         color: var(--ddd-theme-default-pughBlue);
       }
-      
+      .image {
+        width: 100%;
+        min-height: 200px;
+        background-size: cover;
+        background-position: center;
+        margin: 1rem 0;
+        border-radius: 8px;
+      }
     `];
   }
 
@@ -88,6 +97,9 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
   <p class="top-heading">${this.topHeading}</p>
   <h3>${this.title}</h3>
   <div class="line">────────</div>
+  ${this.img
+          ? html`<div class="image" style="background-image: url(${this.img});"></div>`
+      : html``}
   <h3 class="desc">${this.desc}</h3>
   <slot></slot>
 </div>`;
