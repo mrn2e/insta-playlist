@@ -30,6 +30,7 @@ export class CardIndicator extends DDDSuper(I18NMixin(LitElement)) {
       ...super.properties,
       total: { type: Number },
       currentIndex: { type: Number },
+      images: { type: Array },
     };
   }
 
@@ -46,31 +47,41 @@ export class CardIndicator extends DDDSuper(I18NMixin(LitElement)) {
       .all {
         display: flex;
         justify-content: center;
-        gap: var(--ddd-spacing-4);
         padding: var(--ddd-spacing-4);
       }
-      .current {
-       width: 12px;
-       height: 12px;
-       border-radius: 50%;
-       background-color: var(--ddd-theme-default-beaverBlue);
-       opacity: 0.4;
+      .thumb {
+       width: 35px;
+       height: 35px;
+       object-fit: cover;
+       border-radius: 4px;
+       border: 2px solid transparent;
        cursor: pointer;
+       opacity: 0.6;
+       flex-shrink: 0;
       }
-      .current.active {
+      .thumb.active {
       opacity: 1;
       }
     `];
   }
 
   // Lit render the HTML
-  //tasks: have index, dispatch event on click
+  //tasks: REPLACE DOTS WITH IMGs
   render() {
-    let all = [];
+    const all = [];
+
     for (let i = 0; i < this.total; i++) {
-      all.push(html`
-      <span @click="${this._handleClick}" data-index="${i}" class="current ${i === this.currentIndex ? 'active' : ''}"></span>
-        `);
+      const src = Array.isArray(this.images) && this.images[i] ? this.images[i] : null;
+      if (src) {
+        all.push(html`
+          <img 
+            @click="${this._handleClick}"
+            data-index="${i}"
+            class="thumb ${i === this.currentIndex ? "active" : ""}"
+            src="${src}"
+            />
+          `);
+      } 
     }
     return html`
       <div class="all">
@@ -79,12 +90,11 @@ export class CardIndicator extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   _handleClick(e) {
+    const index = parseInt(e.target.dataset.index, 10);
     const indexCHange = new CustomEvent("play-list-index-changed", {
       composed: true,
       bubbles: true,
-      detail: {
-        index: parseInt(e.target.dataset.index)
-      }
+      detail: { index }
     })
     this.dispatchEvent(indexCHange);
   }

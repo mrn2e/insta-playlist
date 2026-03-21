@@ -114,7 +114,8 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
   <card-indicator
   @play-list-index-changed="${this.handleEvent}"
   .total="${this.slides ? this.slides.length : 0}"
-  .currentIndex="${this.currentIndex}">
+  .currentIndex="${this.currentIndex}"
+  .images="${this.slides ? this.slides.map(slide => slide.img) : []}">
   </card-indicator>
 </div>
 </div>
