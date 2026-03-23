@@ -1,0 +1,36 @@
+{
+"images": [
+    {
+        "slideIndex": 1,
+        "authorId": 1,
+        "dateTaken": "2024-05-15",
+        "thumbnailSrc": "https://i.pinimg.com/736x/eb/0e/a2/eb0ea2847d45e256cab1f24d66b26865.jpg",
+        "fullSrc": "https://i.pinimg.com/736x/eb/0e/a2/eb0ea2847d45e256cab1f24d66b26865.jpg"
+    },
+    {
+        "slideIndex": 2,
+        "authorId": 2,
+        "dateTaken": "2024-05-15",
+        "thumbnailSrc": "https://i.pinimg.com/736x/73/46/90/7346903ae6b975caaf191c46953dc198.jpg",
+        "fullSrc": "https://i.pinimg.com/736x/73/46/90/7346903ae6b975caaf191c46953dc198.jpg"
+    },
+    {
+        "slideIndex": 3,
+        "authorId": 3,
+        "dateTaken": "2024-05-15",
+        "thumbnailSrc": "https://example.com/thumbnails/sunset.jpg",
+        "fullSrc": "https://example.com/fullsize/sunset.jpg"
+    } 
+]
+
+ ,"author": [
+    {
+        "name": "John Doe",
+        "authorId": 1,
+        "profileImage": "https://example.com/profiles/johndoe.jpg",
+        "userSince": "2020-01-01",
+        "channelName": "John's Photography"
+    }   
+ ]
+}
+            

@@ -122,6 +122,16 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
 `;
   }
 
+  _loadLikeState() {
+    const savedState = localStorage.getItem("liked" + this.currentIndex);
+    this.liked = savedState === "true";
+  }
+
+   toggleLike() {
+    this.liked = !this.liked;
+    localStorage.setItem("liked" + this.currentIndex, this.liked);
+    }
+
   handleEvent(e) {
     this.currentIndex = e.detail.index;
     this._updateSlides();

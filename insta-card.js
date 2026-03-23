@@ -107,7 +107,13 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
   ${this.img
           ? html`<div class="image" style="background-image: url(${this.img});"></div>`
       : html``}
-  <img class="icons" src="https://static.vecteezy.com/system/resources/thumbnails/002/855/165/small/minimalist-social-media-icons-like-comment-share-and-save-icons-social-media-flat-icon-vector.jpg">
+      <div class="icons">
+    <span class="icon" @click="${this.toggleLike}">
+        ${this.liked ? "❤️" : "🤍"}
+</span>
+<span class="icon">💬</span>
+<span class="icon">🔗</span>
+</div>
   <slot></slot>
 </div>`;
   }
