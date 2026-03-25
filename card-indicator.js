@@ -53,8 +53,8 @@ export class CardIndicator extends DDDSuper(I18NMixin(LitElement)) {
        width: 35px;
        height: 35px;
        object-fit: cover;
-       border-radius: 4px;
-       border: 2px solid transparent;
+       border-radius: var(--ddd-radius-xs);
+       border: var(--ddd-border-sm);
        cursor: pointer;
        opacity: 0.6;
        flex-shrink: 0;

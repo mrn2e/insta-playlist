@@ -22,6 +22,7 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
     super();
     this.title = "";
     this.topHeading = "";
+    this.channel = "";
     this.img = "";
     this.t = this.t || {};
     this.t = {
@@ -35,10 +36,12 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
   static get properties() {
     return {
       ...super.properties,
-      desc: { type: String },
+      channel: { type: String },
       topHeading: { type: String },
       img: { type: String },
       active: { type: Boolean, reflect: true },
+      liked: { type: Boolean },
+      index: { type: Number },
     };
   }
 
@@ -53,30 +56,30 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         display: block;
         border-width: var(--ddd-border-size-lg);
         min-height: 200px;
-        padding-right: 100px;
-        background-color: WHITE;
+        padding-right: var(--ddd-spacing-25);
+        background-color: var(--ddd-theme-default-white);
         border-radius: var(--ddd-radius-md);
         padding: var(--ddd-spacing-4);
       }
       h3 {
         color: var(--ddd-theme-default-beaverBlue);
         font-size: var(--ddd-font-size-xxl);
-        padding: 0px;
-        margin: 0px;
+        padding: var(--ddd-spacing-0);
+        margin: var(--ddd-spacing-0);
       }
       .top-heading {
         color: var(--ddd-theme-default-link);
-        font-size: 18px;
+        font-size: var(--ddd-font-size-3xs);
         font-weight: var(--ddd-font-weight-bold);
         text-transform: uppercase;
-        margin: 0;
-        margin-top: 30px;
-        padding: 3px;
+        margin: var(--ddd-spacing-0);
+        margin-top: var(--ddd-spacing-0);
+        padding: var(--ddd-spacing-1);
       }
       .line {
         border-top: 1px solid var(--ddd-theme-primary); 
-        font-size: 10px;
-        margin-top: 30px;
+        font-size: var(--ddd-font-size-4xs);
+        margin-top: var(--ddd-spacing-8);
         color: var(--ddd-theme-default-pughBlue);
       }
       .image {
@@ -87,15 +90,25 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         object-fit: cover;
         background-size: cover;
         background-position: center;
-        border-radius: 8px;
+        border-radius: var(--ddd-radius-sm);
         display: block;
       }
       .icons {
         width: 100px; 
-        margin: 0 px;
-        padding-bottom: 0px;
+        margin: var(--ddd-spacing-0);
+        padding-bottom: var(--ddd-spacing-0);
       }
     `];
+  }
+
+  _loadLikeState() {
+    const savedState = localStorage.getItem("liked" + this.currentIndex);
+    this.liked = savedState === "true";
+  }
+
+  toggleLike() {
+    this.liked = !this.liked;
+    localStorage.setItem("liked" + this.index, this.liked);
   }
 
   // Lit render the HTML
@@ -103,7 +116,7 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
   render() {
     return html`
 <div class="wrapper">
-  <p class="top-heading">${this.topHeading}</p>
+  <p class="top-heading">${this.topHeading}${this.channel}</p>
   ${this.img
           ? html`<div class="image" style="background-image: url(${this.img});"></div>`
       : html``}
@@ -113,7 +126,7 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
 </span>
 <span class="icon">💬</span>
 <span class="icon">🔗</span>
-</div>
+  </div>
   <slot></slot>
 </div>`;
   }

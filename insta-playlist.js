@@ -22,7 +22,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
     super();
     this.title = "";
     this.currentIndex = 0;
-    this.dataUrl = "https://randomfox.ca/floof/";
+    
     this.t = this.t || {};
     this.t = {
       ...this.t,
@@ -43,7 +43,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
       title: { type: String },
       currentIndex: { type: Number, reflect: true },
       items: { type: Array },
-      dataUrl: { type: String },
+      data: { type: Object },
     };
   }
 
@@ -54,7 +54,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
       :host {
         display: block;
         color: var(--ddd-theme-primary);
-        background-color: gray;
+        background-color: var(--ddd-theme-default-limestoneGray);
         font-family: var(--ddd-font-navigation);
         box-shadow: var(--ddd-shadow-elevation-2);
         border-radius: var(--ddd-radius-lg);
@@ -122,15 +122,6 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
 `;
   }
 
-  _loadLikeState() {
-    const savedState = localStorage.getItem("liked" + this.currentIndex);
-    this.liked = savedState === "true";
-  }
-
-   toggleLike() {
-    this.liked = !this.liked;
-    localStorage.setItem("liked" + this.currentIndex, this.liked);
-    }
 
   handleEvent(e) {
     this.currentIndex = e.detail.index;
@@ -158,44 +149,39 @@ async firstUpdated() {
   );
 
   this.currentIndex = 0;
-  this.loadStaticData();
-  await this.getFoxes(); 
+  await this.loadData();
+  this.dataToSlides();
   this._updateSlides();
   this.requestUpdate();
 }
 
-response = {
-  "data": [
-    {
-      "source": "https://github.com/btopro.png",
-      "title": "Inventor"
-    },
-    {
-      "source": "https://github.com/haxtheweb.png",
-      "title": "Invention"
-    }
-  ]
-};
 
-loadStaticData() {
-  this.response.data.forEach((i, index) => {
-    if (this.slides[index]) {
-      this.slides[index].title = i.title;
-      this.slides[index].img = i.source;
-      ;
+async loadData() {
+  try {
+    const resp = await fetch("./data.json");
+    if (resp.ok) {
+      this.data = await resp.json();
     }
-  });
+  } catch (e) {
+    console.error("Error!!", e);
+  }
 }
 
-async getFoxes() {
-  for (let i = 0; i < this.slides.length; i++) {
-    const resp = await fetch(this.dataUrl);
-    if (resp.ok) {
-      const data = await resp.json();
-      this.slides[i].img = data.image;
-      ;
-    }
-  }
+dataToSlides() {
+  if (!this.data) return;
+  this.data.images.forEach((imgData, index) => {
+    const slide = this.slides[index];
+    if (!slide) return;
+    const author = this.data.author.find(
+      (a) => a.authorId === imgData.authorId
+    );
+
+    slide.img = imgData.fullSrc;
+    slide.topHeading = author ? author.name : "Unknown";
+    slide.channel = `${author?.channelName || ""} • ${imgData.dateTaken}`;
+    slide.index = index;
+    slide.liked = localStorage.getItem("liked" + index) === "true";
+  });
 }
 
 _handleArrow(direction) {
