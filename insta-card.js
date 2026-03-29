@@ -100,16 +100,17 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
       }
     `];
   }
-
-  _loadLikeState() {
-    const savedState = localStorage.getItem("liked" + this.currentIndex);
-    this.liked = savedState === "true";
+  updated(changedProperties) {
+  if (changedProperties.has("index")) {
+    const saved = localStorage.getItem("liked-" + this.index);
+    this.liked = saved === "true";
   }
+}
 
-  toggleLike() {
-    this.liked = !this.liked;
-    localStorage.setItem("liked" + this.index, this.liked);
-  }
+ toggleLike() {
+  this.liked = !this.liked;
+  localStorage.setItem("liked-" + this.index, this.liked);
+}
 
   // Lit render the HTML
   //tasks: know index, show/hide based on idex (class? for active)

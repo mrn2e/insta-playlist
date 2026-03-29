@@ -123,20 +123,25 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
   }
 
 
-  handleEvent(e) {
-    this.currentIndex = e.detail.index;
-    this._updateSlides();
-  }
-  next() {
+handleEvent(e) {
+  this.currentIndex = e.detail.index;
+  this._updateSlides();
+  this.updateQueryParam("slide", this.currentIndex);
+}
+
+next() {
   if (this.currentIndex < this.slides.length - 1) {
     this.currentIndex++;
     this._updateSlides();
+    this.updateQueryParam("slide", this.currentIndex);
   }
 }
+
 prev() {
   if (this.currentIndex > 0) {
     this.currentIndex--;
     this._updateSlides();
+    this.updateQueryParam("slide", this.currentIndex);
   }
 }
 
@@ -148,7 +153,14 @@ async firstUpdated() {
     (el) => el.tagName === "INSTA-CARD"
   );
 
+const params = new URLSearchParams(window.location.search);
+const slideFromUrl = parseInt(params.get("slide"));
+
+if (!isNaN(slideFromUrl)) {
+  this.currentIndex = slideFromUrl;
+} else {
   this.currentIndex = 0;
+}
   await this.loadData();
   this.dataToSlides();
   this._updateSlides();
@@ -158,13 +170,20 @@ async firstUpdated() {
 
 async loadData() {
   try {
-    const resp = await fetch("./data.json");
+    const url = new URL("./data.json", import.meta.url).href;
+    const resp = await fetch(url);
     if (resp.ok) {
       this.data = await resp.json();
     }
   } catch (e) {
-    console.error("Error!!", e);
+    console.error("Error", e);
   }
+}
+
+updateQueryParam(key, value) {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set(key, value);
+  history.pushState(null, '', currentUrl.toString());
 }
 
 dataToSlides() {
@@ -180,7 +199,6 @@ dataToSlides() {
     slide.topHeading = author ? author.name : "Unknown";
     slide.channel = `${author?.channelName || ""} • ${imgData.dateTaken}`;
     slide.index = index;
-    slide.liked = localStorage.getItem("liked" + index) === "true";
   });
 }
 
