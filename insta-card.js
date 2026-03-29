@@ -41,6 +41,7 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
       img: { type: String },
       active: { type: Boolean, reflect: true },
       liked: { type: Boolean },
+      likeNum: { type: Number },
       index: { type: Number },
     };
   }
@@ -94,26 +95,45 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         display: block;
       }
       .icons {
-        width: 100px; 
+        width: 200px; 
         margin: var(--ddd-spacing-0);
         padding-bottom: var(--ddd-spacing-0);
       }
     `];
   }
-  updated(changedProperties) {
+  
+updated(changedProperties) {
   if (changedProperties.has("index")) {
-    const saved = localStorage.getItem("liked-" + this.index);
-    this.liked = saved === "true";
+    const liked = localStorage.getItem("liked-" + this.index);
+    this.liked = liked === "true";
+
+    const likeNum = localStorage.getItem("likeNum-" + this.index);
+    this.likeNum = likeNum ? parseInt(likeNum) : (this.likeNum || 0);
   }
 }
 
- toggleLike() {
+toggleLike() {
   this.liked = !this.liked;
+  if (this.liked) {
+    this.likeNum++;
+  } else {
+    this.likeNum--;
+  }
   localStorage.setItem("liked-" + this.index, this.liked);
+  localStorage.setItem("likeNum-" + this.index, this.likeNum);
 }
 
-  // Lit render the HTML
-  //tasks: know index, show/hide based on idex (class? for active)
+//optional, but in one of the example projects from the outline
+async copyShareLink() {
+  try {
+    await navigator.clipboard.writeText(this.img);
+    alert("Image link copied!");
+  } catch (err) {
+    console.error("Clipboard copy failed", err);
+  }
+}
+
+  //tasks: fix the placement for the likeNum, put below the heart icon and style text
   render() {
     return html`
 <div class="wrapper">
@@ -125,8 +145,9 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
     <span class="icon" @click="${this.toggleLike}">
         ${this.liked ? "❤️" : "🤍"}
 </span>
-<span class="icon">💬</span>
-<span class="icon">🔗</span>
+<span>${this.likeNum}</span>
+<span class="icon" >💬</span>
+<span class="icon" @click="${this.copyShareLink}">🔗</span>
   </div>
   <slot></slot>
 </div>`;

@@ -65,8 +65,7 @@ export class CardIndicator extends DDDSuper(I18NMixin(LitElement)) {
     `];
   }
 
-  // Lit render the HTML
-  //tasks: REPLACE DOTS WITH IMGs
+  //tasks: i think we good actually
   render() {
     const all = [];
 
