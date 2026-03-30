@@ -87,7 +87,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   // Lit render the HTML
-  //tasks: method order is super messy
+  //tasks: method order is super messy, dark mode, 
   render() {
     return html`
 <div class="wrapper">
@@ -198,9 +198,11 @@ dataToSlides() {
 
     slide.img = imgData.fullSrc;
     slide.topHeading = author ? author.name : "Unknown";
-    slide.channel = `${author?.channelName || ""} • ${imgData.dateTaken}`;
+    slide.channel = `${author?.channelName || ""}`;
     slide.index = index;
     slide.likeNum = imgData.likeNum || 0;
+    slide.dateTaken = imgData.dateTaken || "";
+    slide.pfp = author ? author.profileImage : "";
   });
 }
 

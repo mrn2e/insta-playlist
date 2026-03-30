@@ -22,8 +22,10 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
     super();
     this.title = "";
     this.topHeading = "";
+    this.dateTaken = "";
     this.channel = "";
     this.img = "";
+    this.pfp = "";
     this.t = this.t || {};
     this.t = {
       ...this.t,
@@ -38,6 +40,8 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
       ...super.properties,
       channel: { type: String },
       topHeading: { type: String },
+      dateTaken: { type: String },
+      pfp: { type: String },
       img: { type: String },
       active: { type: Boolean, reflect: true },
       liked: { type: Boolean },
@@ -74,7 +78,6 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         font-weight: var(--ddd-font-weight-bold);
         text-transform: uppercase;
         margin: var(--ddd-spacing-0);
-        margin-top: var(--ddd-spacing-0);
         padding: var(--ddd-spacing-1);
       }
       .line {
@@ -98,6 +101,20 @@ export class InstaCard extends DDDSuper(I18NMixin(LitElement)) {
         width: 200px; 
         margin: var(--ddd-spacing-0);
         padding-bottom: var(--ddd-spacing-0);
+      }
+      .shh {
+        color: var(--ddd-theme-default-navy40);
+        font-size: var(--ddd-font-size-4xs);
+        margin-top: var(--ddd-spacing-2);
+      }
+      .pfp {
+        width: 20px;
+        height: 20px; 
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        gap: var(--ddd-spacing-2);
       }
     `];
   }
@@ -133,13 +150,16 @@ async copyShareLink() {
   }
 }
 
-  //tasks: fix the placement for the likeNum, put below the heart icon and style text
+  //tasks: fix the placement for the likeNum, put below the heart icon and style text, add profile pic, move date to below caption
   render() {
     return html`
 <div class="wrapper">
-  <p class="top-heading">${this.topHeading}${this.channel}</p>
+  <div class="header">
+    <img class="pfp" src="${this.pfp}" alt="Profile Picture" loading="lazy">
+    <p class="top-heading">${this.topHeading} ${this.channel}</p>
+  </div>
   ${this.img
-          ? html`<div class="image" style="background-image: url(${this.img});"></div>`
+          ? html`<div class="image" style="background-image: url(${this.img})" loading="lazy"></div>`
       : html``}
       <div class="icons">
     <span class="icon" @click="${this.toggleLike}">
@@ -150,6 +170,7 @@ async copyShareLink() {
 <span class="icon" @click="${this.copyShareLink}">🔗</span>
   </div>
   <slot></slot>
+  <div class ="shh">${this.dateTaken}</div>
 </div>`;
   }
 
