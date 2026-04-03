@@ -150,7 +150,7 @@ async copyShareLink() {
   }
 }
 
-  //tasks: fix the placement for the likeNum, put below the heart icon and style text, add profile pic, move date to below caption
+  //tasks: fix the placement for the likeNum, put below the heart icon and style text
   render() {
     return html`
 <div class="wrapper">

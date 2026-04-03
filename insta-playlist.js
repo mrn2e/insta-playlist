@@ -41,7 +41,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
     return {
       ...super.properties,
       title: { type: String },
-      currentIndex: { type: Number, reflect: true },
+      currentIndex: { type: Number},
       items: { type: Array },
       data: { type: Object },
     };
@@ -87,41 +87,43 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   // Lit render the HTML
-  //tasks: method order is super messy, dark mode, 
+  //tasks: method order is super messy, dark mode, DONT FUCKING LOAD EVERYTHING AT ONCE, get data needs to happen in the insta, not the slide
+  //this.append child to print the slides, then request data and set it to a variable, and add to array, then this.item.map(itme)
   render() {
-    return html`
-<div class="wrapper">
+  if (!this.data) return html`Loading...`;
 
-<div class="arrow">
-  <playlist-arrow
-  direction='prev'
-  @prev-clicked="${this.prev}">
+  const visibleItems = this.getVisibleItems();
 
-  </playlist-arrow>
+  return html`
+    <div class="wrapper">
+      <div class="arrow">
+        <playlist-arrow
+          direction="prev"
+          @prev-clicked="${this.prev}">
+        </playlist-arrow>
 
+        <div class="slides">
+          ${visibleItems.map((item, index) => html`
+            <insta-card
+              .img="${item.fullSrc}"
+              .topHeading="${item.authorName}"
+              .channel="${item.channel}"
+              .dateTaken="${item.dateTaken}"
+              .pfp="${item.profileImage}"
+              .index="${item.index}"
+              ?active="${index === 0}">
+            </insta-card>
+          `)}
+        </div>
 
-  <div class="slides">
-  <slot></slot>
-  </div>
-
-  
-  <playlist-arrow
-  direction='next'
-  @next-clicked="${this.next}">
-  </playlist-arrow>
-  </div>
-
-  <div class="indicator">
-  <card-indicator
-  @play-list-index-changed="${this.handleEvent}"
-  .total="${this.slides ? this.slides.length : 0}"
-  .currentIndex="${this.currentIndex}"
-  .images="${this.slides ? this.slides.map(slide => slide.img) : []}">
-  </card-indicator>
-</div>
-</div>
-`;
-  }
+        <playlist-arrow
+          direction="next"
+          @next-clicked="${this.next}">
+        </playlist-arrow>
+      </div>
+    </div>
+  `;
+}
 
 
 handleEvent(e) {
@@ -131,29 +133,39 @@ handleEvent(e) {
 }
 
 next() {
-  if (this.currentIndex < this.slides.length - 1) {
+  if (this.currentIndex < this.data.images.length - 1) {
     this.currentIndex++;
-    this._updateSlides();
-    this.updateQueryParam("slide", this.currentIndex);
   }
 }
 
 prev() {
   if (this.currentIndex > 0) {
     this.currentIndex--;
-    this._updateSlides();
-    this.updateQueryParam("slide", this.currentIndex);
   }
 }
 
+getVisibleItems() {
+  if (!this.data) return [];
+
+  const start = this.currentIndex;
+  const end = start + 1; // only 1 slide (or use +2 for preload)
+
+  return this.data.images.slice(start, end).map((imgData, i) => {
+    const author = this.data.author.find(
+      (a) => a.authorId === imgData.authorId
+    );
+
+    return {
+      ...imgData,
+      index: start + i,
+      authorName: author?.name || "Unknown",
+      channel: author?.channelName || "",
+      profileImage: author?.profileImage || "",
+    };
+  });
+}
+
 async firstUpdated() {
-  const slot = this.shadowRoot.querySelector("slot");
-  const elements = slot.assignedElements({ flatten: true });
-
-  this.slides = elements.filter(
-    (el) => el.tagName === "INSTA-CARD"
-  );
-
 const params = new URLSearchParams(window.location.search);
 const slideFromUrl = parseInt(params.get("slide"));
 
