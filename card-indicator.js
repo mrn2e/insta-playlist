@@ -48,16 +48,20 @@ export class CardIndicator extends DDDSuper(I18NMixin(LitElement)) {
         display: flex;
         justify-content: center;
         padding: var(--ddd-spacing-4);
+        overflow-x: auto;
+        max-width: 300px;
+        gap: var(--ddd-spacing-2);
       }
       .thumb {
-       width: 35px;
-       height: 35px;
+       width: 50px;
+       height: 50px;
        object-fit: cover;
        border-radius: var(--ddd-radius-xs);
        border: var(--ddd-border-sm);
        cursor: pointer;
        opacity: 0.6;
        flex-shrink: 0;
+       margin: 0 var(--ddd-spacing-1);
       }
       .thumb.active {
       opacity: 1;
@@ -67,36 +71,75 @@ export class CardIndicator extends DDDSuper(I18NMixin(LitElement)) {
 
   //tasks: i think we good actually
   render() {
-    const all = [];
+  if (!this.images) return html``;
+  const { start, end } = this.getVisibleRange();
+  const visible = this.images.slice(start, end);
 
-    for (let i = 0; i < this.total; i++) {
-      const src = Array.isArray(this.images) && this.images[i] ? this.images[i] : null;
-      if (src) {
-        all.push(html`
+  return html`
+    <div class="all">
+      ${visible.map((src, i) => {
+        const actualIndex = start + i;
+
+        return html`
           <img 
             @click="${this._handleClick}"
-            data-index="${i}"
-            class="thumb ${i === this.currentIndex ? "active" : ""}"
+            data-index="${actualIndex}"
+            class="thumb ${actualIndex === this.currentIndex ? "active" : ""}"
             src="${src}"
-            />
-          `);
-      } 
-    }
-    return html`
-      <div class="all">
-        ${all}
-      </div>`;
-  }
+            loading="lazy"
+          />
+        `;
+      })}
+    </div>
+  `;
+}
 
   _handleClick(e) {
-    const index = parseInt(e.target.dataset.index, 10);
-    const indexCHange = new CustomEvent("play-list-index-changed", {
-      composed: true,
-      bubbles: true,
-      detail: { index }
-    })
-    this.dispatchEvent(indexCHange);
+  const index = parseInt(e.target.dataset.index);
+
+  this.dispatchEvent(new CustomEvent("play-list-index-changed", {
+    detail: { index },
+    bubbles: true,
+    composed: true
+  }));
+}
+  updated(changedProperties) {
+    super.updated(changedProperties);
+    if (changedProperties.has('currentIndex')) {
+      this._scrollToActive();
+    }
   }
+
+  _scrollToActive() {
+    const activeThumb = this.shadowRoot.querySelector('.thumb.active');
+    if (activeThumb) {
+      activeThumb.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center'
+      });
+    }
+  }
+
+  getVisibleRange() {
+  const range = 5;
+  const half = Math.floor(range / 2);
+
+  let start = this.currentIndex - half;
+  let end = this.currentIndex + half + 1;
+
+  if (start < 0) {
+    start = 0;
+    end = range;
+  }
+
+  if (end > this.images.length) {
+    end = this.images.length;
+    start = end - range;
+  }
+
+  return { start, end };
+}
 
 }
 

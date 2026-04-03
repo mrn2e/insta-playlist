@@ -81,6 +81,10 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
         display: flex;
         justify-content: center;
         margin-top: var(--ddd-spacing-2);
+        @media (max-width: 600px) {
+          margin-top: var(--ddd-spacing-1);
+          
+        }
       }
       
     `];
