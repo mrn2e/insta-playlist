@@ -79,7 +79,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
       }
       .indicator {
         display: flex;
-        justify-content: left;
+        justify-content: center;
         margin-top: var(--ddd-spacing-2);
       }
       
@@ -87,8 +87,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
   }
 
   // Lit render the HTML
-  //tasks: method order is super messy, dark mode, DONT FUCKING LOAD EVERYTHING AT ONCE, get data needs to happen in the insta, not the slide
-  //this.append child to print the slides, then request data and set it to a variable, and add to array, then this.item.map(itme)
+  //tasks: method order is super messy, dark mode,
   render() {
   if (!this.data) return html`Loading...`;
 
@@ -120,6 +119,15 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
           direction="next"
           @next-clicked="${this.next}">
         </playlist-arrow>
+      </div>
+
+      <div class="indicator">
+        <card-indicator
+         @play-list-index-changed="${this.handleEvent}"
+        .total="${this.data ? this.data.images.length : 0}"
+        .currentIndex="${this.currentIndex}"
+        .images="${this.data ? this.data.images.map(img => img.fullSrc) : []}">
+        </card-indicator>
       </div>
     </div>
   `;
