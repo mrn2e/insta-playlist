@@ -68,7 +68,7 @@ export class InstaPlaylist extends DDDSuper(I18NMixin(LitElement)) {
         height: 100%;
         display: flex;
         flex-direction: column;
-        background-color: gray;
+        background-color: var(--ddd-theme-default-limestoneGray);
       }
       .arrow {
         display: flex;
